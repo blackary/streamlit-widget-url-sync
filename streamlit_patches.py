@@ -8,7 +8,6 @@ For monkey-patching some additional magic on top of streamlit
 from ast import literal_eval
 from datetime import date
 from functools import wraps
-from time import sleep
 from typing import Any, Callable
 
 from dateutil import parser
@@ -26,7 +25,7 @@ def get_query_params() -> dict:
         # to handle the case when the query params aren't available yet
         # TODO: Fix this to gracefully handle the case where there really are no
         # query params, so it doesn't wait on every widget on the page
-        sleep(0.2)
+        # sleep(0.2)
         params = experimental_get_query_params()
         session_state["raw_query_params"] = params
     return session_state["raw_query_params"]
