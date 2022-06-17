@@ -1,0 +1,34 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  PROJECT_NAME: streamlit
+  APP_NAME: streamlit-widget-url-sync
+
+tasks:
+  requirements:
+    desc: pip install's the requirements. Recommended to run this in a venv.
+    sources:
+      - requirements.txt
+      - dev-requirements.txt
+    cmds:
+      - pip install -r requirements.txt
+      - pip install -r dev-requirements.txt
+      # - pip install -e .
+  run:
+    desc: Run example streamlit app
+    cmds:
+      - streamlit run example_app.py
+  build:
+    sources:
+      - "**/*.py"
+      - requirements.txt
+      - Dockerfile
+    cmds:
+      - gcloud builds submit --tag gcr.io/{{.PROJECT_NAME}}/{{.APP_NAME}} --project={{.PROJECT_NAME}}
+  deploy:
+    cmds:
+      - gcloud run deploy {{.PROJECT_NAME}} --image gcr.io/{{.PROJECT_NAME}}/{{.APP_NAME}} --platform managed --project={{.PROJECT_NAME}} --allow-unauthenticated
+  bd:
+    deps: [build, deploy]
