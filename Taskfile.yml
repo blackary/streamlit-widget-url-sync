@@ -31,4 +31,6 @@ tasks:
     cmds:
       - gcloud run deploy {{.PROJECT_NAME}} --image gcr.io/{{.PROJECT_NAME}}/{{.APP_NAME}} --platform managed --project={{.PROJECT_NAME}} --allow-unauthenticated
   bd:
-    deps: [build, deploy]
+    cmds:
+      - task: build
+      - task: deploy
