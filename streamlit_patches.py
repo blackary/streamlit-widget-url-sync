@@ -95,7 +95,7 @@ def url_sync(widget: Callable, value_type: type = None, default_value: Any = Non
         widget_type = str(widget).split("Mixin.")[1].split()[0]
 
         # Make key that will be used in both session state and url param
-        sync_key = f"synced_{widget_type}_{label}".replace(" ", "_").lower()
+        sync_key = f"{widget_type}_{label}".replace(" ", "_").lower()
 
         if widget_type == "multiselect":
             url_param = get_query_params().get(sync_key)
