@@ -21,11 +21,6 @@ def get_query_params() -> dict:
     session state. Afterwards, just return local copy.
     """
     if "raw_query_params" not in session_state or not session_state["raw_query_params"]:
-        # Add small delay when first checking the url, before creating the widgets,
-        # to handle the case when the query params aren't available yet
-        # TODO: Fix this to gracefully handle the case where there really are no
-        # query params, so it doesn't wait on every widget on the page
-        # sleep(0.2)
         params = experimental_get_query_params()
         session_state["raw_query_params"] = params
     return session_state["raw_query_params"]
