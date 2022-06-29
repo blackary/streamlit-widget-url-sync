@@ -1,7 +1,5 @@
 import hashlib
 import json
-import os
-import subprocess
 from typing import Union
 from urllib import parse
 
@@ -13,7 +11,7 @@ from db import _get_connector, add_row, get_table
 
 TABLE = "url_table"
 DEFAULT_HASH_LENGTH = 10
-BASE_URL = "https://streamlit-widget-url-sync{branch}-e3jbxxj6ja-ue.a.run.app"
+BASE_URL = "https://streamlit-widget-url-sync-e3jbxxj6ja-ue.a.run.app"
 
 Params = dict[str, Union[str, list[str]]]
 
@@ -96,23 +94,8 @@ def save_hash_if_not_exists(params: Params = None) -> str:
     return hash
 
 
-def get_current_branch() -> str:
-    return (
-        subprocess.check_output(["git", "branch", "--show-current"], cwd=os.getcwd())
-        .decode("utf-8")
-        .strip()
-    )
-
-
 def get_short_url_from_hash(hash: str) -> str:
-    branch = get_current_branch()
-
-    if branch != "main":
-        base_url = BASE_URL.format(branch="-" + branch)
-    else:
-        base_url = BASE_URL.format(branch="")
-
-    return base_url + "?" + parse.urlencode({"q": hash})
+    return BASE_URL + "?" + parse.urlencode({"q": hash})
 
 
 def get_short_url_button():
