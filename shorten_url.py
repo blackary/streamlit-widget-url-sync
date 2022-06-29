@@ -12,7 +12,7 @@ from db import _get_connector, add_row, get_table
 
 TABLE = "url_table"
 DEFAULT_HASH_LENGTH = 10
-BASE_URL = "https://example.com"
+BASE_URL = "https://streamlit-widget-url-sync-e3jbxxj6ja-ue.a.run.app"
 
 Params = dict[str, Union[str, list[str]]]
 
