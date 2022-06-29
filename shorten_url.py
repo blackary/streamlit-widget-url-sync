@@ -2,12 +2,12 @@ import hashlib
 import json
 import os
 import subprocess
-from sqlite3 import DatabaseError
 from typing import Union
 from urllib import parse
 
 import pandas as pd
 import streamlit as st
+from pandas.io.sql import DatabaseError
 
 from db import _get_connector, add_row, get_table
 
