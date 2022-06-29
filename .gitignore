@@ -131,3 +131,5 @@ dmypy.json
 .envrc
 .direnv/
 .task/
+
+*.db

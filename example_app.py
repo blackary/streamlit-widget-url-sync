@@ -1,6 +1,10 @@
 from datetime import date
 from typing import TYPE_CHECKING, Any
 
+from shorten_url import expand_short_url, get_short_url_button
+
+expand_short_url()
+
 # Ewww...I hate it...but it works for mypy for now...
 if TYPE_CHECKING:
     st = Any
@@ -35,3 +39,5 @@ st.selectbox("Pick a fruit!", ["Apple", "Orange", "Banana"], url_sync=True)
 st.multiselect("Pick some fruit!", ["Apple", "Orange", "Banana"], url_sync=True)
 
 st.slider("Test multislider", value=(2, 6), url_sync=True)
+
+get_short_url_button()

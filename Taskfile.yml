@@ -4,7 +4,17 @@ version: '3'
 
 vars:
   PROJECT_NAME: streamlit
-  APP_NAME: streamlit-widget-url-sync
+  APP_NAME: widget-url-sync
+  PUBLIC: true
+  NAME:
+    sh: |
+      BRANCH=$(git rev-parse --abbrev-ref HEAD)
+      if [[ "$BRANCH" == "main" ]]
+      then
+        echo "{{.PROJECT_NAME}}-{{.APP_NAME}}"
+      else
+        echo "{{.PROJECT_NAME}}-{{.APP_NAME}}-$BRANCH"
+      fi
 
 tasks:
   requirements:
@@ -15,22 +25,44 @@ tasks:
     cmds:
       - pip install -r requirements.txt
       - pip install -r dev-requirements.txt
-      # - pip install -e .
   run:
     desc: Run example streamlit app
+    deps: [requirements]
     cmds:
       - streamlit run example_app.py
   build:
+    desc: Build docker image and deploy to google cloud
+    deps: [create_requirements]
     sources:
       - "**/*.py"
       - requirements.txt
       - Dockerfile
+      - cloudbuild.yaml
+      - .gcloudignore
     cmds:
-      - gcloud builds submit --tag gcr.io/{{.PROJECT_NAME}}/{{.APP_NAME}} --project={{.PROJECT_NAME}}
+      - cmd: gcloud builds submit --config cloudbuild.yaml .
   deploy:
+    desc: Run latest version of container in google cloud
     cmds:
-      - gcloud run deploy {{.PROJECT_NAME}} --image gcr.io/{{.PROJECT_NAME}}/{{.APP_NAME}} --platform managed --project={{.PROJECT_NAME}} --allow-unauthenticated
+      - gcloud run deploy {{.NAME}} --image gcr.io/{{.PROJECT_NAME}}/{{.APP_NAME}} --platform managed --project={{.PROJECT_NAME}} {{.ALLOW_UNAUTHENTICATED}} --region=us-east1
+    vars:
+      ALLOW_UNAUTHENTICATED:
+        sh: |
+          if {{.PUBLIC}}
+          then
+            echo "--allow-unauthenticated"
+          else
+            echo "--no-allow-unauthenticated"
+          fi
   bd:
+    desc: Build and deploy latest version of container in google cloud
     cmds:
       - task: build
       - task: deploy
+
+  get_url:
+    name: Get url
+    desc: Get url of deployed container
+    cmds:
+      - gcloud run services describe {{.NAME}} --platform managed --project={{.PROJECT_NAME}} --region=us-east1 | grep URL | awk '{print $2}'
+    silent: true

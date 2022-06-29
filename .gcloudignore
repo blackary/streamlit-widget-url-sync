@@ -1,0 +1,24 @@
+.gcloudignore
+.git
+
+# Intermediate generated files
+temp/
+
+# Python / pyenv
+.python-version
+*.pyc
+.venv
+
+# Mac stuff
+.DS_Store
+
+# Editors
+.vscode
+.vim
+
+.envrc
+*.code-workspace
+
+.task/
+
+*.db
