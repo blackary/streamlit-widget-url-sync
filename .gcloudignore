@@ -24,4 +24,8 @@ temp/
 .envrc
 .direnv/
 
+.mypy_cache/
+.task/
+__pycache__/
+
 *.db
