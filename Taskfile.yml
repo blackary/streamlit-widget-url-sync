@@ -32,7 +32,7 @@ tasks:
       - streamlit run example_app.py
   build:
     desc: Build docker image and deploy to google cloud
-    deps: [create_requirements]
+    deps: [requirements]
     sources:
       - "**/*.py"
       - requirements.txt

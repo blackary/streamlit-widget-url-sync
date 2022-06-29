@@ -21,4 +21,7 @@ temp/
 
 .task/
 
+.envrc
+.direnv/
+
 *.db
