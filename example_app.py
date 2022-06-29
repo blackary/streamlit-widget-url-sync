@@ -1,19 +1,12 @@
+# type: ignore
 from datetime import date
-from typing import TYPE_CHECKING, Any
 
+import streamlit_patches as st
 from shorten_url import expand_short_url, get_short_url_button
-
-expand_short_url()
-
-# Ewww...I hate it...but it works for mypy for now...
-if TYPE_CHECKING:
-    st = Any
-else:
-    import streamlit_patches as st
 
 st.set_page_config("Session state playground", page_icon="✅")
 
-# st.expander("Show query params").write(st.experimental_get_query_params())
+expand_short_url()
 
 st.checkbox("This is an example checkbox", url_sync=True)
 st.checkbox("Another?", url_sync=True)

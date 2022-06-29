@@ -2,17 +2,18 @@ import hashlib
 import json
 import os
 import subprocess
-from time import sleep
+from sqlite3 import DatabaseError
 from typing import Union
 from urllib import parse
 
+import pandas as pd
 import streamlit as st
 
 from db import _get_connector, add_row, get_table
 
 TABLE = "url_table"
 DEFAULT_HASH_LENGTH = 10
-BASE_URL = "https://streamlit-widget-url-sync-e3jbxxj6ja-ue.a.run.app"
+BASE_URL = "https://streamlit-widget-url-sync{branch}-e3jbxxj6ja-ue.a.run.app"
 
 Params = dict[str, Union[str, list[str]]]
 
@@ -33,6 +34,14 @@ def _create_url_table():
     )
     conn.commit()
     conn.close()
+
+
+def get_url_table_data() -> pd.DataFrame:
+    try:
+        return get_table(TABLE)
+    except DatabaseError:
+        _create_url_table()
+        return get_table(TABLE)
 
 
 def get_hash(data: str, length: int = DEFAULT_HASH_LENGTH) -> str:
@@ -66,12 +75,12 @@ def get_hash_from_params(params: Params = None) -> str:
 
 
 def get_params_from_hash(hash: str) -> Params:
-    df = get_table(TABLE)
+    df = get_url_table_data()
     return json.loads(df[df["hash"] == hash].params.values[0])
 
 
 def is_hash_in_table(hash: str) -> bool:
-    df = get_table(TABLE)
+    df = get_url_table_data()
     return hash in df.hash.values
 
 
@@ -97,7 +106,11 @@ def get_current_branch() -> str:
 
 def get_short_url_from_hash(hash: str) -> str:
     branch = get_current_branch()
-    base_url = f"{BASE_URL}/{branch}"
+
+    if branch != "main":
+        base_url = BASE_URL.format(branch="-" + branch)
+    else:
+        base_url = BASE_URL.format(branch="")
 
     return base_url + "?" + parse.urlencode({"q": hash})
 
@@ -116,8 +129,5 @@ def expand_short_url():
         try:
             query_params = get_params_from_hash(short_hash)
             st.experimental_set_query_params(**query_params)
-            # Necessary, otherwise the query params don't actually get updated
-            sleep(0.1)
-            st.experimental_rerun()
-        except KeyError:
-            pass
+        except IndexError:
+            st.error(f"Invalid short url: {short_hash}")
