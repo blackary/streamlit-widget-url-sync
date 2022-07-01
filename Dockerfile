@@ -20,7 +20,7 @@ COPY litestream-v0.3.8-linux-amd64.deb litestream-v0.3.8-linux-amd64.deb
 RUN dpkg -i litestream-v0.3.8-linux-amd64.deb
 RUN litestream version
 COPY litestream.yml /etc/litestream.yml
-RUN litestream restore -o example.db gcs://streamlit-widget-url-sync-bucket-bucket/example.db
+# RUN litestream restore -o example.db gcs://streamlit-widget-url-sync-bucket/example.db
 
 # Copy local code to the container image.
 COPY . ./
@@ -31,4 +31,5 @@ COPY . ./
 # to be equal to the cores available.
 # Timeout is set to 0 to disable the timeouts of the workers to allow Cloud Run to handle instance scaling.
 # Start it via litestream so that the database is automatically replicated while the app is running
-CMD litestream replicate -exec "streamlit run --server.port 8080 --server.enampleCORS false example_app.py"
+#CMD litestream replicate -exec "streamlit run --server.port 8080 --server.enampleCORS false example_app.py"
+CMD ./run_app.sh
