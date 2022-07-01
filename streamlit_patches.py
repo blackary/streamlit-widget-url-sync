@@ -1,6 +1,3 @@
-# type: ignore
-# flake8: noqa
-
 """
 For monkey-patching some additional magic on top of streamlit
 """
@@ -13,6 +10,7 @@ from typing import Any, Callable
 from dateutil import parser
 from streamlit import *
 from streamlit import __version__
+from streamlit import checkbox as _checkbox
 
 
 def get_query_params() -> dict:
@@ -100,6 +98,8 @@ def url_sync(widget: Callable, value_type: type = None, default_value: Any = Non
             except KeyError:
                 url_param = None
 
+        url_value: Any
+
         if url_param is not None:
             if value_type is bool:
                 url_value = _string_to_bool(url_param)
@@ -122,7 +122,7 @@ def url_sync(widget: Callable, value_type: type = None, default_value: Any = Non
             elif value_type != str and "(" in url_param:
                 url_value = literal_eval(url_param)
             else:
-                url_value = value_type(url_param)
+                url_value = value_type(url_param)  # type: ignore
         else:
             url_value = None
 
@@ -163,7 +163,7 @@ def url_sync(widget: Callable, value_type: type = None, default_value: Any = Non
     return wrapper
 
 
-checkbox = url_sync(checkbox, bool, False)
+checkbox = url_sync(_checkbox, bool, False)
 radio = url_sync(radio, int, 0)
 text_input = url_sync(text_input, str, "")
 text_area = url_sync(text_area, str, "")

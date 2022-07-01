@@ -26,10 +26,13 @@ tasks:
       - pip install -r requirements.txt
       - pip install -r dev-requirements.txt
   run:
-    desc: Run example streamlit app
+    desc: Run example streamlit app, including backing up the db to litestream
     deps: [requirements]
     cmds:
-      - streamlit run example_app.py
+      # - streamlit run example_app.py
+      - litestream replicate -exec "streamlit run example_app.py"
+      # - litestream replicate example.db gcs://{{.PROJECT_NAME}}-{{.APP_NAME}}-bucket/example.db -exec "streamlit run example_app.py"
+
   build:
     desc: Build docker image and deploy to google cloud
     deps: [requirements]
@@ -66,3 +69,23 @@ tasks:
     cmds:
       - gcloud run services describe {{.NAME}} --platform managed --project={{.PROJECT_NAME}} --region=us-east1 | grep URL | awk '{print $2}'
     silent: true
+
+  create_bucket:
+    name: Create GCS bucket
+    cmds:
+      - source create_bucket.sh
+
+  copy_litestream_config:
+    name: Copy litestream.yml to /etc/
+    cmds:
+      - sudo cp litestream.yml /etc/
+
+  replicate_db:
+    name: Replicate local db to GCS bucket
+    cmds:
+      - litestream replicate example.db gcs://{{.PROJECT_NAME}}-{{.APP_NAME}}-bucket/example.db
+
+  restore_db:
+    name: Restore local db from GCS bucket
+    cmds:
+      - litestream restore -o example.db gcs://{{.PROJECT_NAME}}-{{.APP_NAME}}-bucket/example.db

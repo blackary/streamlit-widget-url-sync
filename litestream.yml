@@ -1,0 +1,4 @@
+dbs:
+  - path: example.db
+    replicas:
+      - url: gcs://streamlit-widget-url-sync-bucket/example.db

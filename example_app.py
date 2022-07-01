@@ -9,6 +9,7 @@ st.set_page_config("Session state playground", page_icon="✅")
 expand_short_url()
 
 st.checkbox("This is an example checkbox", url_sync=True)
+
 st.checkbox("Another?", url_sync=True)
 
 st.radio("First radio button", ["Dogs", "Cats", "Birds"], url_sync=True)
