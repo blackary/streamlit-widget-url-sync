@@ -42,6 +42,7 @@ tasks:
       - Dockerfile
       - cloudbuild.yaml
       - .gcloudignore
+      - run_app.sh
     cmds:
       - cmd: gcloud builds submit --config cloudbuild.yaml .
   deploy:
