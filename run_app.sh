@@ -10,4 +10,4 @@ else
 fi
 
 # Run litestream with streamlit as the subprocess.
-exec litestream replicate -exec "streamlit run --server.port 8080 --server.enampleCORS false example_app.py"
+exec litestream replicate -exec "streamlit run --server.port 8080 --server.enableCORS false example_app.py"

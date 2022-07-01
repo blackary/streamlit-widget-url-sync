@@ -47,7 +47,7 @@ tasks:
   deploy:
     desc: Run latest version of container in google cloud
     cmds:
-      - gcloud run deploy {{.NAME}} --image gcr.io/{{.PROJECT_NAME}}/{{.APP_NAME}} --platform managed --project={{.PROJECT_NAME}} {{.ALLOW_UNAUTHENTICATED}} --region=us-east1
+      - gcloud beta run deploy {{.NAME}} --image gcr.io/{{.PROJECT_NAME}}/{{.APP_NAME}} --platform managed --project={{.PROJECT_NAME}} {{.ALLOW_UNAUTHENTICATED}} --region=us-east1 --execution-environment gen2
     vars:
       ALLOW_UNAUTHENTICATED:
         sh: |
